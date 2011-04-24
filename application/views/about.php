@@ -46,7 +46,7 @@ $this->load->view('sub/head',$data)?>
                     <strong>New feature!</strong> I just changed the author copyright watermark to be semi transparent. I think the images look much better that way.
                 </p>
                 <p class="about">
-                    <strong>UPDATE: </strong>The source code is now <a href="https://github.com/jfoucher/flickholdr">available on github</a>
+                    <strong>UPDATE:</strong>The source code is now <a href="https://github.com/jfoucher/flickholdr">available on github</a>
                 </p>
 
             </div>

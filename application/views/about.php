@@ -13,6 +13,9 @@ $this->load->view('sub/head',$data)?>
                 </header>
                 <h2 id="about">About</h2>
                 <p class="about">
+                    <strong>UPDATE: </strong>The source code is now <a href="https://github.com/jfoucher/flickholdr">available on github</a>
+                </p>
+                <p class="about">
                     I built this in <strike>five</strike> eleven hours, by the clock. I really liked <a href="http://placekitten.com">placekitten.com</a>,
                     but would not see myself using it on a client site.
                 </p>

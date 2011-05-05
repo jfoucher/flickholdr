@@ -9,4 +9,4 @@ Also install/activate the rewrite module (mod_rewrite), which allows for clean i
 
 ##install##
 
-Copy these files to a publicly accessible folder on your web server and open the corredponding url in your browser. You should be greeted with the home page, similar to the one curently viewable at http://flickholdr.com
+Copy these files to a publicly accessible folder on your web server. Edit application/config/config.php and change $config['base_url'] to the url you will use to access fyour flickholdr installation. Open the corresponding url in your browser. You should be greeted with the home page, similar to the one curently viewable at http://flickholdr.com

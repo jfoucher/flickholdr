@@ -32,3 +32,11 @@
     ErrorDocument 404 index.php
 
 </IfModule>
+
+<FilesMatch "\.(ico|flv|jpg|jpeg|png|gif|swf|css|js)$">
+    Header unset ETag
+    FileETag None
+    Header set Cache-Control "max-age=2592000, public"
+    Header set Expires "Thu, 15 Apr 2020 20:00:00 GMT"
+    Header set Last-Modified "Sun, 23 Aug 2009 00:00:00 GMT"
+</FilesMatch>

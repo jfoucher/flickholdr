@@ -13,6 +13,7 @@ menu, nav, section, summary, time, mark, audio, video {
   font-size:100%;
   vertical-align:baseline;
   background:transparent;
+    text-rendering:optimizeLegibility;
 }                  
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { 
     display:block;
@@ -39,7 +40,7 @@ input:placeholder {
     color:    #999;
 }
 
-body { width:960px; margin:40px auto 10px auto;color:#333;  font:13px/1.231 sans-serif; *font-size:small; }
+body { width:960px; margin:40px auto 10px auto;color:#333;  font:13px/1.231 sans-serif; *font-size:small;  }
 select, input, textarea, button { font:99% sans-serif; }
 pre, code, kbd, samp { font-family: monospace, sans-serif; }
 
@@ -111,6 +112,7 @@ header.about-header{
 h1 a, h1 a:active, h1 a:hover, h1 a:visited{
     color:#555;
 
+
 }
 a{
     color: #555;
@@ -127,10 +129,24 @@ a:hover{
     color: #ff0099;
 }
 .description{
-    width:430px;
+
     float:left;
     font-size:40px;
     letter-spacing:-0.05em;
+    width:400px;
+}
+#share2{
+    margin:15px 10px 0 0 ;
+    float:right;
+    width:55px;
+
+}
+#___plusone_0{
+    height:75px !important;
+}
+#share2 iframe{
+    clear:both;
+    margin-bottom:15px;
 }
 #share{
     float:left;
@@ -306,7 +322,9 @@ h2#donate{
 }
 
 
-
+#disqus_thread{
+    clear:both;
+}
 
 
 

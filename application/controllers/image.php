@@ -6,7 +6,7 @@ class Image extends CI_Controller {
 	{
 		parent::__construct();
         $this->load->model('flickr_model');
-        $this->cache_time=365*24; //cache time in hours
+        $this->cache_time=365*24*5; //cache time in hours
         if (!empty($_POST) && isset($_POST['width']) && isset($_POST['height'])){
             $tags=(isset($_POST['tags']) ? '/'.$_POST['tags'] : '');
             redirect('/'.$_POST['width'].'/'.$_POST['height'].$tags);
@@ -41,7 +41,9 @@ class Image extends CI_Controller {
             //exit();
         }else{
             $image=$this->_get_image($width,$height,$tags,$bw,$offset);
-
+            header("Expires: Wed, 23 June 2021 05:00:00 GMT");
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s",time()-3600*24*365*2) . " GMT");
+            header('Cache-control: max-age='. 24*3600*365 .', public');
             header('Content-Type: image/jpeg');
             echo file_get_contents($image);
         }
@@ -106,6 +108,7 @@ class Image extends CI_Controller {
 
         $config['image_library'] = 'gd2';
         $config['source_image'] = $tmp_path;
+        $config['quality']="65%";
 
         $config['maintain_ratio'] = TRUE;
         $config['width'] = $width;

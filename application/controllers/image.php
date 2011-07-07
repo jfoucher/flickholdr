@@ -7,6 +7,7 @@ class Image extends CI_Controller {
 		parent::__construct();
         $this->load->model('flickr_model');
         $this->cache_time=365*24*5; //cache time in hours
+
         if (!empty($_POST) && isset($_POST['width']) && isset($_POST['height'])){
             $tags=(isset($_POST['tags']) ? '/'.$_POST['tags'] : '');
             redirect('/'.$_POST['width'].'/'.$_POST['height'].$tags);
@@ -16,6 +17,7 @@ class Image extends CI_Controller {
 
 	function index()
 	{
+        //$this->output->enable_profiler(TRUE);
         $width=$this->uri->segment(1);
         $height=$this->uri->segment(2);
         $tags=$this->uri->segment(3);
@@ -40,7 +42,9 @@ class Image extends CI_Controller {
             $this->home();
             //exit();
         }else{
+            $this->benchmark->mark('image_start');
             $image=$this->_get_image($width,$height,$tags,$bw,$offset);
+            $this->benchmark->mark('image_end');
             header("Expires: Wed, 23 June 2021 05:00:00 GMT");
             header("Last-Modified: " . gmdate("D, d M Y H:i:s",time()-3600*24*365*2) . " GMT");
             header('Cache-control: max-age='. 24*3600*365 .', public');
@@ -51,6 +55,7 @@ class Image extends CI_Controller {
 	}
 
     function home(){
+        $this->output->enable_profiler(TRUE);
         $this->load->view("home");
     }
 
@@ -73,6 +78,8 @@ class Image extends CI_Controller {
         //if cache exists, return
         $tmp_path=FCPATH.'assets/img/tmp/'.md5($width.$height.$tags.$bw.$offset).'.jpg';
         $che=FCPATH.'assets/img/cache/'.md5($width.$height.$tags.$bw.$offset).'.jpg';
+
+
         if (is_file($che) && filemtime($che) > time() - 3600 * $this->cache_time){
             return base_url().'assets/img/cache/'.md5($width.$height.$tags.$bw.$offset).'.jpg';
 
@@ -83,6 +90,7 @@ class Image extends CI_Controller {
         //no chache, ask from flickr
         $i=0;
         $flickr_image=false;
+        $this->benchmark->mark('flickr_img_loop_start');
         while(!$flickr_image){
             $flickr_image=$this->_get_from_flickr($width,$height,$tags);
             if ($i>3){
@@ -91,6 +99,7 @@ class Image extends CI_Controller {
             }
             $i++;
         }
+        $this->benchmark->mark('flickr_img_loop_end');
         $image=$flickr_image->source;
 
         $img_w=$flickr_image->width;
@@ -100,10 +109,15 @@ class Image extends CI_Controller {
 
         //got first image biggger than requested
         //save image locally
+        $this->benchmark->mark('scale_image_start');
+        $this->benchmark->mark('file_get_contents_start');
         $img=file_get_contents($image);
+        $this->benchmark->mark('file_get_contents_end');
 
         $f=fopen($tmp_path,'w+');
+        $this->benchmark->mark('fwrite_start');
         fwrite($f,$img);
+        $this->benchmark->mark('fwrite_end');
         //scale
 
         $config['image_library'] = 'gd2';
@@ -114,15 +128,19 @@ class Image extends CI_Controller {
         $config['width'] = $width;
         $config['height'] = $height;
         $config['new_image'] = $che;
+
         $config['master_dim']=$this->_find_master_dim($width,$height,$img_w,$img_h);
 
-        $this->load->library('image_lib', $config);
 
+        $this->load->library('image_lib', $config);
+        $this->benchmark->mark('resize_start');
         $this->image_lib->resize();
+        $this->benchmark->mark('resize_end');
 
         //crop
         //get_new image size
-
+        $this->benchmark->mark('scale_image_end');
+        $this->benchmark->mark('crop_image_start');
         $new_size=$this->_find_new_dims($width,$height,$img_w,$img_h);
 
         $cfg['image_library'] = 'gd2';
@@ -144,6 +162,8 @@ class Image extends CI_Controller {
         }
 
         #TODO: author watermark if applicable
+        $this->benchmark->mark('crop_image_end');
+        $this->benchmark->mark('watermark_image_start');
 
         $config['source_image'] = $che;
         $config['wm_text'] = '© '.($flickr_image->owner->realname ? $flickr_image->owner->realname : $flickr_image->owner->username);
@@ -161,17 +181,18 @@ class Image extends CI_Controller {
         $this->image_lib->initialize($config);
 
         $this->image_lib->watermark();
-
+        $this->benchmark->mark('watermark_image_end');
         if ($bw=='bw'){
+            $this->benchmark->mark('bw_image_start');
             if ( ! $this->image_lib->greyscale())
             {
                 echo $this->image_lib->display_errors();
             }
+            $this->benchmark->mark('bw_image_end');
         }
 
         if (is_file($tmp_path))
             unlink($tmp_path);
-
         return base_url().'assets/img/cache/'.md5($width.$height.$tags.$bw.$offset).'.jpg';
     }
 
@@ -179,7 +200,6 @@ class Image extends CI_Controller {
 
         $image=$this->flickr_model->search($tags,$width,$height);
         if (!empty($image)){
-
             foreach($image->sizes->size as $size){
                 if ($size->width>=$width && $size->height>=$height){
                     $size->owner=$image->owner;

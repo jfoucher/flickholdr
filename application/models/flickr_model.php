@@ -15,19 +15,24 @@ class Flickr_model extends CI_Model {
         $this->format='json';
     }
 
-    function search($tags,$width,$height){
+    function search($tags,$width,$height,$offset=1){
+
+
+        $page=floor($offset/20)+1;
 
         $tag_mode='all';
         $tags=urlencode($tags);
         $sort='interestingness-desc';
         $media='photo';
         $license='4,2,1,5,7';
-        $url="http://api.flickr.com/services/rest/?method=flickr.photos.search&per_page=20&page=1&api_key=$this->api_key&tags=$tags&sort=$sort&media=$media&license=$license&format=$this->format&tag_mode=$tag_mode&extras=owner_nam,o_dims,url_o";
+        $url="http://api.flickr.com/services/rest/?method=flickr.photos.search&per_page=20&page=$page&api_key=$this->api_key&tags=$tags&sort=$sort&media=$media&license=$license&format=$this->format&tag_mode=$tag_mode&extras=owner_nam,o_dims,url_o";
         $res=file_get_contents($url);
         $images = json_decode($this->_clean($res));
 
         //exit();
-        foreach($images->photos->photo as $image){
+        $images=$images->photos->photo;
+        shuffle($images);
+        foreach($images as $image){
             if ((isset($image->o_width) && $image->o_height) && ($image->o_width>=$width && $image->o_height>=$height)){
                 $image->width=$image->o_width;
                 $image->height=$image->o_height;

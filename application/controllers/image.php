@@ -92,9 +92,9 @@ class Image extends CI_Controller {
         $flickr_image=false;
         $this->benchmark->mark('flickr_img_loop_start');
         while(!$flickr_image){
-            $flickr_image=$this->_get_from_flickr($width,$height,$tags);
+            $flickr_image=$this->_get_from_flickr($width,$height,$tags,$offset);
             if ($i>3){
-                $flickr_image=$this->_get_from_flickr($width,$height);
+                $flickr_image=$this->_get_from_flickr($width,$height,'',$offset);
                 //break;
             }
             $i++;

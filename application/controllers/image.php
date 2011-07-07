@@ -166,7 +166,7 @@ class Image extends CI_Controller {
         $this->benchmark->mark('watermark_image_start');
 
         $config['source_image'] = $che;
-        $config['wm_text'] = '© '.($flickr_image->owner->realname ? $flickr_image->owner->realname : $flickr_image->owner->username);
+        $config['wm_text'] = '© '.$flickr_image->owner;
         $config['wm_type'] = 'text';
         $config['wm_font_path'] = FCPATH.'assets/fonts/Aller_Lt.ttf';
         $config['wm_font_size'] = ($width/16>12 ? 12 : $width/16);
@@ -200,12 +200,9 @@ class Image extends CI_Controller {
 
         $image=$this->flickr_model->search($tags,$width,$height);
         if (!empty($image)){
-            foreach($image->sizes->size as $size){
-                if ($size->width>=$width && $size->height>=$height){
-                    $size->owner=$image->owner;
-                    return $size;
-                }
-            }
+
+            return $image;
+
         }
         return false;
     }

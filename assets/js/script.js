@@ -8,11 +8,11 @@ $(document).ready(function(){
 
 
     changeImage=function(type){
-        var class=$("#genImg").attr('class');
+        var cls=$("#genImg").attr('class');
         if (type=='next'){
-            var num=parseInt(class.substr(4))+1;
+            var num=parseInt(cls.substr(4))+1;
         }else{
-            var num=parseInt(class.substr(4))-1;
+            var num=parseInt(cls.substr(4))-1;
         }
         $("#genImg").attr('class','num_'+num);
         var width=$("#width").val();

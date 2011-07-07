@@ -17,7 +17,7 @@ class Image extends CI_Controller {
 
 	function index()
 	{
-        //$this->output->enable_profiler(TRUE);
+        //$this->output->enable_profiler(true);
         $width=$this->uri->segment(1);
         $height=$this->uri->segment(2);
         $tags=$this->uri->segment(3);
@@ -55,7 +55,7 @@ class Image extends CI_Controller {
 	}
 
     function home(){
-        $this->output->enable_profiler(TRUE);
+        //$this->output->enable_profiler(TRUE);
         $this->load->view("home");
     }
 

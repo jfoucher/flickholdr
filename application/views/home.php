@@ -40,7 +40,7 @@ $this->load->view('sub/head',$data)?>
                     </div>
 
                 </header>
-                <h2 id="donate"><a href="/donate" title="If you like it click here!">donate</a></h2>
+                <h2 id="donate"><a href="/donate" title="If you like it click here!">donate<span>All funds go towards hosting</span></a></h2>
                 <h2 id="howto">Use It</h2>
                 <p class="links">
 

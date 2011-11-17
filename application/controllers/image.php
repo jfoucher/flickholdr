@@ -17,7 +17,8 @@ class Image extends CI_Controller {
 
 	function index()
 	{
-        //$this->output->enable_profiler(true);
+        if ($this->uri->segment(6))
+            $this->output->enable_profiler(true);
         $width=$this->uri->segment(1);
         $height=$this->uri->segment(2);
         $tags=$this->uri->segment(3);
@@ -45,10 +46,12 @@ class Image extends CI_Controller {
             $this->benchmark->mark('image_start');
             $image=$this->_get_image($width,$height,$tags,$bw,$offset);
             $this->benchmark->mark('image_end');
-            header("Expires: Wed, 23 June 2021 05:00:00 GMT");
-            header("Last-Modified: " . gmdate("D, d M Y H:i:s",time()-3600*24*365*2) . " GMT");
-            header('Cache-control: max-age='. 24*3600*365 .', public');
-            header('Content-Type: image/jpeg');
+            if (!$this->uri->segment(6)){
+                header("Expires: Wed, 23 June 2021 05:00:00 GMT");
+                header("Last-Modified: " . gmdate("D, d M Y H:i:s",time()-3600*24*365*2) . " GMT");
+                header('Cache-control: max-age='. 24*3600*365 .', public');
+                header('Content-Type: image/jpeg');
+            }
             echo file_get_contents($image);
         }
         //var_dump($images);
